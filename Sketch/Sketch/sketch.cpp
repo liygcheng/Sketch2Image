@@ -6,32 +6,36 @@ Sketch::Sketch(QWidget *parent)
 
 	ui.setupUi(this);
 	//connect signal to slot
-
-
-	CreateAction();
-	CreateStatusBar();
+	Initial();
 
 
 	
 }
 
-//// prepocess imageset
-//void Sketch::StartToProcessImageSet(void)
-//{
-//
-//
-//
-//}
+
 
 //  Create Action and Update
-void Sketch::CreateAction(void)
+void Sketch::Initial(void)
 {
-	QObject::connect(ui.actionImage_Folder, SIGNAL(triggered()), this, SLOT(newFolder()));
+	CreateAction();
+	CreateStatusBar();
+	CreateComBox();
+
+
+
+
 
 
 
 }
-void Sketch::newFolder(void)
+void Sketch::CreateAction(void)
+{
+	QObject::connect(ui.actionImage_Folder, SIGNAL(triggered()), this, SLOT(openFolder()));
+	QObject::connect(ui.actionImage_Configure, SIGNAL(triggered()), this, SLOT(openConfigure()));
+
+
+}
+void Sketch::openFolder(void)
 {
 	if (ok2continue()){
 
@@ -46,13 +50,26 @@ void Sketch::newFolder(void)
 
 
 }
+void Sketch::openConfigure(void){
+	if (ok2continue()){
+
+		m_configure = QFileDialog::getOpenFileName(this, tr("open configure"), ".", tr("configure file (*.configure)"));
+
+		if (!m_configure.isEmpty())
+			QMessageBox::information(this, tr(""), m_configure);
+	
+	}
+}
 bool Sketch::save(void)
 {
 
 	return true;
 
 }
+bool Sketch::saveAs(const QString& filename){
 
+	return true;
+}
 
 // Create statusBar and Update
 void Sketch::CreateStatusBar(void)
@@ -79,5 +96,44 @@ void Sketch::updateStatusBar(void)
 	sb.m_value->setText(m_imageRoot);
 
 	
+
+}
+
+//Create Combox
+void Sketch::CreateComBox(void)
+{
+
+	ui.m_FunctionType->addItem(tr("sketch2image"), NULL);
+	ui.m_FunctionType->addItem(tr("sketch2composition"), NULL);
+	ui.m_FunctionType->setItemText(0, tr("sketch2image"));
+
+	ui.m_FunctionType->setItemText(1, tr("sketch2composition"));
+
+	ui.m_FunctionType->setAutoCompletion(true);
+	ui.m_FunctionType->setCurrentIndex(0);
+
+	QObject::connect(ui.m_FunctionType, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSketchMode(int)));
+
+
+}
+bool Sketch::changeSketchMode(int mode)
+{
+	//sb.m_attr->setText("");
+
+	//sb.m_value->setText(tr("change sketch mode"));
+	if (ok2continue())
+	{
+		Reset();
+	}
+
+
+	return true;
+}
+
+void Sketch::Reset(void)
+{
+
+
+
 
 }

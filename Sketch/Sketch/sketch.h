@@ -14,6 +14,10 @@ struct myStatusBar{
 	QLabel* m_value;
 };
 
+
+
+
+
 class Sketch: public QMainWindow
 {
     Q_OBJECT
@@ -27,16 +31,23 @@ public:
 private slots:
 
 // Action
-	void newFolder(void);
+	void openFolder(void);
+	void openConfigure(void);
 	bool save(void);
+	bool saveAs(const QString& filename);
+	bool changeSketchMode(int);
 	
 
 
 private:
 
+	void Initial(void);
 	void CreateAction(void);
 	void CreateStatusBar(void);
 	void updateStatusBar(void);
+	void CreateComBox(void);
+
+	void Reset(void);
 
 private:// some uilities 
 
@@ -67,6 +78,9 @@ private:
 	//add by Lechao Cheng
 	QString m_imageRoot;
 	QStringList m_imageSubFolder;
+	QString m_configure;
+	QString m_dumpFolder;
+
 
 	// Actions
 	enum{MAXRecentFiles = 5};
