@@ -14,8 +14,8 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -33,13 +33,13 @@ public:
     QAction *actionImage_Folder;
     QAction *actionImage_Configure;
     QWidget *centralWidget;
-    QGraphicsView *m_SketchPlane;
     QComboBox *m_Tag;
     QComboBox *m_FunctionType;
     QScrollArea *m_SearchScrollArea;
     QWidget *scrollAreaSketch;
     QScrollArea *m_SketchScrollArea;
     QWidget *scrollAreaSearch;
+    QLabel *m_SketchPlane;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuOpen;
@@ -134,18 +134,6 @@ public:
         brush10.setStyle(Qt::SolidPattern);
         palette1.setBrush(QPalette::Disabled, QPalette::Base, brush10);
         centralWidget->setPalette(palette1);
-        m_SketchPlane = new QGraphicsView(centralWidget);
-        m_SketchPlane->setObjectName(QStringLiteral("m_SketchPlane"));
-        m_SketchPlane->setGeometry(QRect(0, 0, 481, 421));
-        QPalette palette2;
-        palette2.setBrush(QPalette::Active, QPalette::Base, brush6);
-        palette2.setBrush(QPalette::Active, QPalette::Window, brush6);
-        palette2.setBrush(QPalette::Inactive, QPalette::Base, brush6);
-        palette2.setBrush(QPalette::Inactive, QPalette::Window, brush6);
-        palette2.setBrush(QPalette::Disabled, QPalette::Base, brush6);
-        palette2.setBrush(QPalette::Disabled, QPalette::Window, brush6);
-        m_SketchPlane->setPalette(palette2);
-        m_SketchPlane->setStyleSheet(QStringLiteral(""));
         m_Tag = new QComboBox(centralWidget);
         m_Tag->setObjectName(QStringLiteral("m_Tag"));
         m_Tag->setGeometry(QRect(620, 10, 121, 31));
@@ -155,14 +143,14 @@ public:
         m_SearchScrollArea = new QScrollArea(centralWidget);
         m_SearchScrollArea->setObjectName(QStringLiteral("m_SearchScrollArea"));
         m_SearchScrollArea->setGeometry(QRect(489, 60, 251, 521));
-        QPalette palette3;
-        palette3.setBrush(QPalette::Active, QPalette::Base, brush6);
-        palette3.setBrush(QPalette::Active, QPalette::Window, brush6);
-        palette3.setBrush(QPalette::Inactive, QPalette::Base, brush6);
-        palette3.setBrush(QPalette::Inactive, QPalette::Window, brush6);
-        palette3.setBrush(QPalette::Disabled, QPalette::Base, brush6);
-        palette3.setBrush(QPalette::Disabled, QPalette::Window, brush6);
-        m_SearchScrollArea->setPalette(palette3);
+        QPalette palette2;
+        palette2.setBrush(QPalette::Active, QPalette::Base, brush6);
+        palette2.setBrush(QPalette::Active, QPalette::Window, brush6);
+        palette2.setBrush(QPalette::Inactive, QPalette::Base, brush6);
+        palette2.setBrush(QPalette::Inactive, QPalette::Window, brush6);
+        palette2.setBrush(QPalette::Disabled, QPalette::Base, brush6);
+        palette2.setBrush(QPalette::Disabled, QPalette::Window, brush6);
+        m_SearchScrollArea->setPalette(palette2);
         m_SearchScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         m_SearchScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         m_SearchScrollArea->setWidgetResizable(true);
@@ -173,37 +161,40 @@ public:
         m_SketchScrollArea = new QScrollArea(centralWidget);
         m_SketchScrollArea->setObjectName(QStringLiteral("m_SketchScrollArea"));
         m_SketchScrollArea->setGeometry(QRect(0, 429, 481, 151));
-        QPalette palette4;
-        palette4.setBrush(QPalette::Active, QPalette::Base, brush6);
-        palette4.setBrush(QPalette::Active, QPalette::Window, brush6);
-        palette4.setBrush(QPalette::Inactive, QPalette::Base, brush6);
-        palette4.setBrush(QPalette::Inactive, QPalette::Window, brush6);
-        palette4.setBrush(QPalette::Disabled, QPalette::Base, brush6);
-        palette4.setBrush(QPalette::Disabled, QPalette::Window, brush6);
-        m_SketchScrollArea->setPalette(palette4);
-        m_SketchScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        m_SketchScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        QPalette palette3;
+        palette3.setBrush(QPalette::Active, QPalette::Base, brush6);
+        palette3.setBrush(QPalette::Active, QPalette::Window, brush6);
+        palette3.setBrush(QPalette::Inactive, QPalette::Base, brush6);
+        palette3.setBrush(QPalette::Inactive, QPalette::Window, brush6);
+        palette3.setBrush(QPalette::Disabled, QPalette::Base, brush6);
+        palette3.setBrush(QPalette::Disabled, QPalette::Window, brush6);
+        m_SketchScrollArea->setPalette(palette3);
+        m_SketchScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        m_SketchScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         m_SketchScrollArea->setWidgetResizable(true);
         scrollAreaSearch = new QWidget();
         scrollAreaSearch->setObjectName(QStringLiteral("scrollAreaSearch"));
-        scrollAreaSearch->setGeometry(QRect(0, 0, 462, 149));
+        scrollAreaSearch->setGeometry(QRect(0, 0, 479, 132));
         m_SketchScrollArea->setWidget(scrollAreaSearch);
+        m_SketchPlane = new QLabel(centralWidget);
+        m_SketchPlane->setObjectName(QStringLiteral("m_SketchPlane"));
+        m_SketchPlane->setGeometry(QRect(10, 20, 461, 391));
         SketchClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(SketchClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 755, 21));
-        QPalette palette5;
+        QPalette palette4;
         QBrush brush11(QColor(252, 255, 229, 255));
         brush11.setStyle(Qt::SolidPattern);
-        palette5.setBrush(QPalette::Active, QPalette::Base, brush11);
+        palette4.setBrush(QPalette::Active, QPalette::Base, brush11);
         QBrush brush12(QColor(199, 216, 220, 255));
         brush12.setStyle(Qt::SolidPattern);
-        palette5.setBrush(QPalette::Active, QPalette::Window, brush12);
-        palette5.setBrush(QPalette::Inactive, QPalette::Base, brush11);
-        palette5.setBrush(QPalette::Inactive, QPalette::Window, brush12);
-        palette5.setBrush(QPalette::Disabled, QPalette::Base, brush12);
-        palette5.setBrush(QPalette::Disabled, QPalette::Window, brush12);
-        menuBar->setPalette(palette5);
+        palette4.setBrush(QPalette::Active, QPalette::Window, brush12);
+        palette4.setBrush(QPalette::Inactive, QPalette::Base, brush11);
+        palette4.setBrush(QPalette::Inactive, QPalette::Window, brush12);
+        palette4.setBrush(QPalette::Disabled, QPalette::Base, brush12);
+        palette4.setBrush(QPalette::Disabled, QPalette::Window, brush12);
+        menuBar->setPalette(palette4);
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOpen = new QMenu(menuFile);
@@ -253,6 +244,7 @@ public:
         m_FunctionType->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
         m_FunctionType->setCurrentText(QString());
+        m_SketchPlane->setText(QString());
         menuFile->setTitle(QApplication::translate("SketchClass", "File", 0));
         menuOpen->setTitle(QApplication::translate("SketchClass", "Open", 0));
     } // retranslateUi

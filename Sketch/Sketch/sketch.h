@@ -7,6 +7,8 @@
 #include<qmessagebox.h>
 #include<qfiledialog.h>
 #include<qlabel.h>
+#include <QMouseEvent>
+
 //add by Lechao
 
 struct myStatusBar{
@@ -25,8 +27,7 @@ class Sketch: public QMainWindow
 public:
     Sketch(QWidget *parent = Q_NULLPTR);
 
-//signals:
-	//void StartToProcessImageSet(void);
+
 
 private slots:
 
@@ -46,7 +47,7 @@ private:
 	void CreateStatusBar(void);
 	void updateStatusBar(void);
 	void CreateComBox(void);
-
+	void CreateEventFilter(void);
 	void Reset(void);
 
 private:// some uilities 
@@ -67,6 +68,9 @@ private:// some uilities
 
 	}
 
+public:
+	bool eventFilter(QObject*target, QEvent* event);
+
 private:
 
     Ui::SketchClass ui;
@@ -85,6 +89,11 @@ private:
 	// Actions
 	enum{MAXRecentFiles = 5};
 	QAction* recentFileActions[MAXRecentFiles];
+
+
+	// Qt  sketch images
+
+	QVector<QImage> m_sketchImage;
 
 
 };

@@ -20,14 +20,10 @@ void Sketch::Initial(void)
 	CreateAction();
 	CreateStatusBar();
 	CreateComBox();
-
-
-
-
-
-
+	CreateEventFilter();
 
 }
+
 void Sketch::CreateAction(void)
 {
 	QObject::connect(ui.actionImage_Folder, SIGNAL(triggered()), this, SLOT(openFolder()));
@@ -135,5 +131,52 @@ void Sketch::Reset(void)
 
 
 
+
+}
+
+//sketch plane
+
+
+
+// EventFilters
+void Sketch::CreateEventFilter(void)
+{
+	ui.m_SketchPlane->installEventFilter(this);
+	
+
+}
+
+bool Sketch::eventFilter(QObject*target, QEvent*myevent)
+{
+
+	if (target == ui.m_SketchPlane)
+	{
+		if (myevent->type() == QEvent::KeyPress){
+
+			QKeyEvent* e = static_cast<QKeyEvent*>(myevent);
+
+			if (e->key() == Qt::Key_Space)
+			{
+				QMessageBox::information(this, tr(""), "ok");
+				return true;
+			}		
+		}
+
+		if (myevent->type() == QEvent::MouseButtonPress)
+		{
+			QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
+			if (e->button() == Qt::LeftButton){
+				QMessageBox::information(this, tr(""), "ok");
+				return true;
+			}
+
+		}
+
+
+
+
+	}
+
+	return QMainWindow::eventFilter(target, myevent);
 
 }
