@@ -22,6 +22,23 @@ void Sketch::Initial(void)
 	CreateComBox();
 	CreateEventFilter();
 
+	m_currentSketch = new QImage(ui.m_SketchPlane->width(), ui.m_SketchPlane->height(), QImage::Format_Grayscale8);
+
+	for (int i = 0; i < ui.m_SketchPlane->height(); ++i)
+	{
+		
+		uchar *pdata = (uchar *)m_currentSketch->scanLine(i);
+
+		memset(pdata, 255, ui.m_SketchPlane->width());
+		
+	}
+	
+
+	ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+
+
+
+	
 }
 
 void Sketch::CreateAction(void)
@@ -99,14 +116,19 @@ void Sketch::updateStatusBar(void)
 void Sketch::CreateComBox(void)
 {
 
-	ui.m_FunctionType->addItem(tr("sketch2image"), NULL);
-	ui.m_FunctionType->addItem(tr("sketch2composition"), NULL);
-	ui.m_FunctionType->setItemText(0, tr("sketch2image"));
+	ui.m_FunctionType->addItem(tr("sketch"), NULL);
+	ui.m_FunctionType->addItem(tr("composition"), NULL);
+	ui.m_FunctionType->addItem(tr("clear"), NULL);
 
-	ui.m_FunctionType->setItemText(1, tr("sketch2composition"));
+	ui.m_FunctionType->setItemText(0, tr("sketch"));
+
+	ui.m_FunctionType->setItemText(1, tr("composition"));
+
+	ui.m_FunctionType->setItemText(2, tr("clear"));
 
 	ui.m_FunctionType->setAutoCompletion(true);
 	ui.m_FunctionType->setCurrentIndex(0);
+	
 
 	QObject::connect(ui.m_FunctionType, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSketchMode(int)));
 
@@ -117,10 +139,43 @@ bool Sketch::changeSketchMode(int mode)
 	//sb.m_attr->setText("");
 
 	//sb.m_value->setText(tr("change sketch mode"));
-	if (ok2continue())
-	{
-		Reset();
-	}
+	
+	
+		switch (mode)
+		{
+		case 0:
+			if (ok2continue())
+			{
+				QMessageBox::information(this, tr(""), "sketch");
+
+
+			}
+			
+			break;
+		case 1:
+			if (ok2continue())
+			{
+				QMessageBox::information(this, tr(""), "composition");
+			}
+			
+			break;
+		case 2:
+			for (int i = 0; i < ui.m_SketchPlane->height(); ++i)
+			{
+
+				uchar *pdata = (uchar *)m_currentSketch->scanLine(i);
+
+				memset(pdata, 255, ui.m_SketchPlane->width());
+
+			}
+
+
+			ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+
+		default:
+			break;
+		}
+	
 
 
 	return true;
@@ -151,31 +206,44 @@ bool Sketch::eventFilter(QObject*target, QEvent*myevent)
 
 	if (target == ui.m_SketchPlane)
 	{
-		if (myevent->type() == QEvent::KeyPress){
-
-			QKeyEvent* e = static_cast<QKeyEvent*>(myevent);
-
-			if (e->key() == Qt::Key_Space)
-			{
-				QMessageBox::information(this, tr(""), "ok");
-				return true;
-			}		
-		}
-
-		if (myevent->type() == QEvent::MouseButtonPress)
+		if (myevent->type() == QEvent::MouseMove)
 		{
 			QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
-			if (e->button() == Qt::LeftButton){
-				QMessageBox::information(this, tr(""), "ok");
+			if (e->buttons() & Qt::LeftButton){
+				setCursor(Qt::PointingHandCursor);
+				//QMessageBox::information(this, tr(""), "sketch");
+				m_currentSketch->setPixelColor(QPoint(e->pos()),QColor(255));
+				//ui.m_SketchPlane->update();
+				ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+
+				
+
+
 				return true;
 			}
+			return QMainWindow::eventFilter(target, myevent);
+		}
+		else if (myevent->type() == QEvent::Paint)
+		{
+			//QPainter painter(this);
+			//QPen pen;                                 //创建一个画笔  
+			//pen.setColor(Qt::darkCyan);
+			//pen.setWidth(5);
+			//painter.setPen(pen);
 
+			//for (int i = 0; i<lines.size(); i++){
+			//	myLine* pLine = lines[i];
+			//	painter.drawLine(pLine->startPnt, pLine->endPnt);
+			//}
 		}
 
 
 
 
+		return QMainWindow::eventFilter(target, myevent);
+
 	}
+
 
 	return QMainWindow::eventFilter(target, myevent);
 

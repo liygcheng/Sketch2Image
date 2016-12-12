@@ -8,12 +8,21 @@
 #include<qfiledialog.h>
 #include<qlabel.h>
 #include <QMouseEvent>
+#include<qpen.h>
+#include<qpainter.h>
+#include<qpolygon.h>
+
 
 //add by Lechao
 
 struct myStatusBar{
 	QLabel* m_attr;
 	QLabel* m_value;
+};
+
+class abstractShape{
+
+
 };
 
 
@@ -94,7 +103,7 @@ private:
 	// Qt  sketch images
 
 	QVector<QImage> m_sketchImage;
-
+	QImage* m_currentSketch;
 
 };
 

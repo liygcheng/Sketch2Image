@@ -140,6 +140,12 @@ public:
         m_FunctionType = new QComboBox(centralWidget);
         m_FunctionType->setObjectName(QStringLiteral("m_FunctionType"));
         m_FunctionType->setGeometry(QRect(490, 10, 121, 31));
+        QFont font;
+        font.setFamily(QStringLiteral("Consolas"));
+        font.setPointSize(14);
+        font.setBold(true);
+        font.setWeight(75);
+        m_FunctionType->setFont(font);
         m_SearchScrollArea = new QScrollArea(centralWidget);
         m_SearchScrollArea->setObjectName(QStringLiteral("m_SearchScrollArea"));
         m_SearchScrollArea->setGeometry(QRect(489, 60, 251, 521));
@@ -202,10 +208,10 @@ public:
         SketchClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(SketchClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
-        QFont font;
-        font.setFamily(QStringLiteral("Consolas"));
-        font.setPointSize(10);
-        statusBar->setFont(font);
+        QFont font1;
+        font1.setFamily(QStringLiteral("Consolas"));
+        font1.setPointSize(10);
+        statusBar->setFont(font1);
         statusBar->setAutoFillBackground(true);
         statusBar->setStyleSheet(QStringLiteral(""));
         statusBar->setInputMethodHints(Qt::ImhTime);
