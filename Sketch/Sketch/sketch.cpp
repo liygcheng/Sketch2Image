@@ -24,17 +24,19 @@ void Sketch::Initial(void)
 
 	m_currentSketch = new QImage(ui.m_SketchPlane->width(), ui.m_SketchPlane->height(), QImage::Format_Grayscale8);
 
+	//m_currentSketch->fill(Qt::blue);
+
 	for (int i = 0; i < ui.m_SketchPlane->height(); ++i)
 	{
 		
 		uchar *pdata = (uchar *)m_currentSketch->scanLine(i);
 
-		memset(pdata, 255, ui.m_SketchPlane->width());
+		memset(pdata, 0, ui.m_SketchPlane->width());
 		
 	}
 	
 
-	ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+	//ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
 
 
 
@@ -133,6 +135,9 @@ void Sketch::CreateComBox(void)
 	QObject::connect(ui.m_FunctionType, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSketchMode(int)));
 
 
+
+
+
 }
 bool Sketch::changeSketchMode(int mode)
 {
@@ -163,14 +168,14 @@ bool Sketch::changeSketchMode(int mode)
 			for (int i = 0; i < ui.m_SketchPlane->height(); ++i)
 			{
 
-				uchar *pdata = (uchar *)m_currentSketch->scanLine(i);
+				//uchar *pdata = (uchar *)m_currentSketch->scanLine(i);
 
-				memset(pdata, 255, ui.m_SketchPlane->width());
+				//memset(pdata, 255, ui.m_SketchPlane->width());
 
 			}
 
 
-			ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+			//ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
 
 		default:
 			break;
@@ -206,38 +211,114 @@ bool Sketch::eventFilter(QObject*target, QEvent*myevent)
 
 	if (target == ui.m_SketchPlane)
 	{
-		if (myevent->type() == QEvent::MouseMove)
-		{
-			QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
-			if (e->buttons() & Qt::LeftButton){
-				setCursor(Qt::PointingHandCursor);
-				//QMessageBox::information(this, tr(""), "sketch");
-				m_currentSketch->setPixelColor(QPoint(e->pos()),QColor(255));
-				//ui.m_SketchPlane->update();
-				ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
+
+		ui.m_SketchPlane->setFocusPolicy(Qt::StrongFocus);
+
+			if (myevent->type() == QEvent::MouseButtonPress)
+			{
+				QMouseEvent* e = static_cast<QMouseEvent*>(myevent);			
+
+				m_currentShape = new CurveShape();
+				m_currentShape->setPen(m_pen.pen);
+				m_currentShape->setBrush(m_pen.brush);
+
+				if (m_currentShape != NULL){
+					m_isLeftButtonPressed = true;
+					m_currentShape->setBeginPoint(e->pos());
+					m_shapes.append(m_currentShape);
+				}
+			}
+
+
+			
+			if (myevent->type() == QEvent::MouseButtonRelease)
+			{
+				QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
+				m_currentShape->setEndPoint(e->pos());
+				m_isLeftButtonPressed = false;
+				setCursor(Qt::CustomCursor);
+			}
+
+
+		
+			if (myevent->type() == QEvent::MouseMove)
+			{
+				QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
+				if (m_currentShape  && m_isLeftButtonPressed){
+
+					m_currentShape->addPoint(e->pos());
+					setCursor(Qt::PointingHandCursor);
+					update();
+				}
+			}
+
+			
+			if (myevent->type() == QEvent::Paint)
+			{
+
+				QPainter painter(ui.m_SketchPlane);
+
+				painter.setRenderHint(QPainter::Antialiasing, true);
+
+				foreach(AbstractShape *shape, m_shapes)
+				{
+					shape->draw(painter);
+				}
+
+			}
+			if (myevent->type() == QEvent::MouseButtonDblClick)
+			{
+				
+				QMouseEvent* e = static_cast<QMouseEvent*>(myevent);
+
+				if (e->button() == Qt::LeftButton)
+				{
+					m_pen.pen.setWidth(m_pen.pen.width() + 1);
+					
+				}
+				else if (e->button() == Qt::RightButton)
+				{
+					m_pen.pen.setWidth(m_pen.pen.width() - 1);
+					
+				}
+				
+				update();
+			}
+
+			if (myevent->type() == QEvent::KeyPress){
+
+			
+
+				QKeyEvent* e = static_cast<QKeyEvent*>(myevent);
+
+				if (e->key() == Qt::Key_0)
+				{
+
+
+					foreach(AbstractShape *shape, m_shapes)
+					{
+						QVector<QPoint> m_p = ( static_cast<CurveShape*>(shape))->get_points();
+
+						
+						for each (QPoint p in m_p)
+						{
+							m_currentSketch->setPixelColor(p, Qt::white);
+						}
+
+					}
+
+					ui.m_SketchPlane->setPixmap(QPixmap::fromImage(*m_currentSketch));
 
 				
 
 
-				return true;
+
+				}
+
+				update();
+
+
 			}
-			return QMainWindow::eventFilter(target, myevent);
-		}
-		else if (myevent->type() == QEvent::Paint)
-		{
-			//QPainter painter(this);
-			//QPen pen;                                 //创建一个画笔  
-			//pen.setColor(Qt::darkCyan);
-			//pen.setWidth(5);
-			//painter.setPen(pen);
-
-			//for (int i = 0; i<lines.size(); i++){
-			//	myLine* pLine = lines[i];
-			//	painter.drawLine(pLine->startPnt, pLine->endPnt);
-			//}
-		}
-
-
 
 
 		return QMainWindow::eventFilter(target, myevent);

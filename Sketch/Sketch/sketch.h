@@ -11,6 +11,10 @@
 #include<qpen.h>
 #include<qpainter.h>
 #include<qpolygon.h>
+#include <QBrush>
+#include <QPixmap>
+#include<QList>
+#include<qdebug.h>
 
 
 //add by Lechao
@@ -20,12 +24,75 @@ struct myStatusBar{
 	QLabel* m_value;
 };
 
-class abstractShape{
+struct myPen{
+	QPen pen;
+	QBrush brush;
+};
 
+class AbstractShape : public QWidget
+{
+	Q_OBJECT
+
+public:
+	enum Category { Curve, Line, Rect, Text };
+
+	explicit AbstractShape(QWidget *parent = 0){ setBackgroundRole(QPalette::Base); }
+
+	inline QPoint getBeginPoint(){	return beginPoint;}
+
+	inline void setBeginPoint(QPoint point){	this->beginPoint = point;}
+
+	inline QPoint getEndPoint(){ return endPoint; }
+
+	inline void setEndPoint(QPoint point){this->endPoint = point;}
+
+	void virtual draw(QPainter &painter) = 0; //需要具体图形子类实现
+	void virtual addPoint(QPoint point) = 0; //为了画任意曲线特意留的一个口子
+
+signals:
+
+	public slots :
+		inline void setPen(const QPen &pen){ this->pen = pen; }
+	    inline void setBrush(const QBrush &brush){ this->brush = brush; }
+
+protected:
+
+	QPoint beginPoint;
+	QPoint endPoint;
+	QBrush brush;
+	QPen pen;
 
 };
 
+class CurveShape :public AbstractShape{
 
+public:
+	CurveShape(){};
+	inline QPoint getBeginPoint(){ return points.at(0); }
+
+	inline void setBeginPoint(QPoint point){ this->addPoint(point); }
+
+	inline QPoint getEndPoint(){return points.at(points.size() - 1); }
+
+	inline void setEndPoint(QPoint point){	this->addPoint(point); }
+
+	inline void addPoint(QPoint point){ this->points.append(point); }
+
+	inline void draw(QPainter &painter){
+		painter.setPen(pen);
+		painter.setBrush(brush);
+		//此处是画任意曲线的关键，如果修改为drawPolygon，可以看到鼠标画图是实现了，但在起始和结束点均有一条   直线相连
+		painter.drawPolyline(QPolygonF(points));
+	}
+
+    QVector<QPoint> & get_points(){ return points; };
+
+protected:
+
+private:
+	QVector<QPoint> points; //曲线其实就是一堆QPoint的点集合，此处存放，鼠标移动时候将点存入此处
+
+};
 
 
 
@@ -95,15 +162,15 @@ private:
 	QString m_dumpFolder;
 
 
-	// Actions
-	enum{MAXRecentFiles = 5};
-	QAction* recentFileActions[MAXRecentFiles];
-
 
 	// Qt  sketch images
 
 	QVector<QImage> m_sketchImage;
 	QImage* m_currentSketch;
+	QList<AbstractShape*> m_shapes;
+	AbstractShape *m_currentShape;
+	bool m_isLeftButtonPressed;
+	myPen m_pen;
 
 };
 
